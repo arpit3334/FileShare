@@ -1,27 +1,24 @@
-const File = require('./models/file')
-const fs= require('fs')
 const connectDB = require('./config/db');
+const File = require('./models/file');
+const fs = require('fs');
+
 connectDB();
 
-async function  fetchData() {
-    //24hrs fetch files
-        const pastDate = new Date(Date.now()- 24 * 60 * 60 * 1000);
-        const files = await File.find({ createdAt: { $lt: pastDate }});
-
-        if(files.length){
-            for(const file of files){
-                try{
-                    fs.unlinkSync(file.path);
-                     await file.remove();
-                    console.log(`succesfully deleted ${file.filename}`);
-                    }catch(err){
-                    console.log(`Error while deleting file ${err}`);
-                    }
+// Get all records older than 24 hours 
+async function fetchData() {
+    const files = await File.find({ createdAt : { $lt: new Date(Date.now() - 24 * 60 * 60 * 1000)} })
+    if(files.length) {
+        for (const file of files) {
+            try {
+                fs.unlinkSync(file.path);
+                await file.remove();
+                console.log(`successfully deleted ${file.filename}`);
+            } catch(err) {
+                console.log(`error while deleting file ${err} `);
             }
-            console.log('Job done');
         }
-
+    }
+    console.log('Job done!');
 }
-fetchData().then(process.exit);
 
-module.exports = fetchData;
+fetchData().then(process.exit);

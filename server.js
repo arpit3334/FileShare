@@ -1,5 +1,5 @@
 const express = require('express');
-
+require('dotenv').config();
 const app = express();
 const path = require('path');
 const cors = require('cors')
@@ -33,6 +33,6 @@ app.use('/files', require('./routes/show'));
 app.use('/files/download' , require('./routes/download'));
 
 
-app.listen(PORT , ()=>{
+app.listen(PORT , 
     console.log(`Listening on port ${PORT}`)
-})
+);
